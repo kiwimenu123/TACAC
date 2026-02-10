@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - TAC</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-brand">
+            <i class="fas fa-shield-alt"></i>
+            <span>TAC</span>
+        </div>
+        <div class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="#" id="logoutBtn">Logout</a>
+        </div>
+    </nav>
+
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h3>Your Server</h3>
+                <p class="server-name" id="serverNameDisplay">Loading...</p>
+            </div>
+            <ul class="sidebar-menu">
+                <li><a href="#" class="active" data-section="overview"><i class="fas fa-home"></i> <span>Overview</span></a></li>
+                <li><a href="#" data-section="players"><i class="fas fa-users"></i> <span>Players</span></a></li>
+                <li><a href="#" data-section="bans"><i class="fas fa-ban"></i> <span>Ban List</span></a></li>
+                <li><a href="#" data-section="kicks"><i class="fas fa-boot"></i> <span>Kick Log</span></a></li>
+                <li><a href="#" data-section="detections"><i class="fas fa-exclamation-triangle"></i> <span>Detections</span></a></li>
+                <li><a href="#" data-section="admins"><i class="fas fa-user-shield"></i> <span>Admins</span></a></li>
+                <li><a href="#" data-section="whitelist"><i class="fas fa-check-circle"></i> <span>Whitelist</span></a></li>
+                <li><a href="#" data-section="logs"><i class="fas fa-history"></i> <span>Activity Log</span></a></li>
+                <li><a href="#" data-section="settings"><i class="fas fa-cog"></i> <span>Settings</span></a></li>
+                <li><a href="#" data-section="config"><i class="fas fa-file-code"></i> <span>Server Config</span></a></li>
+            </ul>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Overview Section -->
+            <section id="overview" class="dashboard-section section-visible">
+                <div class="dashboard-header">
+                    <h1>Dashboard Overview</h1>
+                    <span class="badge badge-success"><i class="fas fa-circle"></i> Protection Active</span>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon blue"><i class="fas fa-users"></i></div>
+                        <div class="stat-info">
+                            <h3 id="totalPlayers">0</h3>
+                            <p>Total Players Tracked</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon red"><i class="fas fa-ban"></i></div>
+                        <div class="stat-info">
+                            <h3 id="totalBans">0</h3>
+                            <p>Total Bans</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon orange"><i class="fas fa-boot"></i></div>
+                        <div class="stat-info">
+                            <h3 id="totalKicks">0</h3>
+                            <p>Total Kicks</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon purple"><i class="fas fa-exclamation-triangle"></i></div>
+                        <div class="stat-info">
+                            <h3 id="totalDetections">0</h3>
+                            <p>Detections Today</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon green"><i class="fas fa-user-shield"></i></div>
+                        <div class="stat-info">
+                            <h3 id="totalAdmins">0</h3>
+                            <p>Active Admins</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Activity -->
+                <div class="data-card">
+                    <div class="data-card-header">
+                        <h2><i class="fas fa-clock"></i> Recent Activity</h2>
+                    </div>
+                    <ul class="activity-list" id="recentActivity">
+                        <!-- Activity items will be inserted here -->
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Players Section -->
+            <section id="players" class="dashboard-section section-hidden">
+                <div class="dashboard-header">
+                    <h1>Player Management</h1>
+                </div>
+
+                <div class="search-filter">
+                    <div class="search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="playerSearch" placeholder="Search players...">
+                    </div>
+                </div>
+
+                <div class="data-card">
+                    <div class="data-card-header">
+                        <h2><i class="fas fa-users"></i> Tracked Players</h2>
+                    </div>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Player Name</th>
+                                <th>Identifiers</th>
+                                <th>First Seen</th>
+                                <th>Last Seen</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="playersTableBody">
+                            <!-- Player rows will be inserted here -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Bans Section -->
+            <section id="bans" class="dashboard-section section-hidden">
+                <div class="dashboard-header">
+                    <h1>Ban Management</h1>
+                    <button class="btn btn-primary" onclick="openModal('addBanModal')">
+                        <i class="fas fa-plus"></i> Add Ban
+                    </button>
+                </div>
+
+                <div class="search-filter">
+                    <div class="search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="banSearch" placeholder="Search bans...">
+                    </div>
+                </div>
+
+                <div class="data-card">
+                    <div class="data-card-header">
+                        <h2><i class="fas fa-ban"></i> Active Bans</h2>
+                    </div>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Player</th>
+                                <th>Identifier</th>
+                                <th>Reason</th>
+                                <th>Banned By</th>
+                                <th>Date</th>
+                                <th>Expires</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="bansTableBody">
+                            <!-- Ban rows will be inserted here -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Kicks Section -->
+            <section id="kicks" class="dashboard-section section-hidden">
+                <div class="dashboard-header">
+                    <h1>Kick Log</h1>
+                </div>
+
+                <div class="data-card">
+                    <div class="data-card-header">
+                        <h2><i class="fas fa-boot"></i> Recent Kicks</h2>
+                    </div>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Player</th>
+                                <th>Reason</th>
+                                <th>Kicked By</th>
+                                <th>Date</th>
+                            </tr>
+                        </thead>
+                        <tbody id="kicksTableBody">
+                            <!-- Kick rows will be inserted here -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Detections Section -->
+            <section id="detections" class="dashboard-section section-hidden">
+                <div class="dashboard-header">
+                    <h1>Cheat Detections</h1>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon red"><i class="fas fa-heart"></i></div>
+                        <div class="stat-info">
+                            <h3 id="godmodeDetections">0</h3>
+                            <p>God Mode</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon orange"><i class="fas fa-tachometer-alt"></i></div>
+                        <div class="stat-info">
+                            <h3 id="speedDetections">0</h3>
+                            <p>Speed Hack</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon purple"><i class="fas fa-ghost"></i></div>
+                        <div class="stat-info">
+                            <h3 id="noclipDetections">0</h3>
+                            <p>NoClip</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon blue"><i class="fas fa-gun"></i></div>
+                        <div class="stat-info">
+                            <h3 id="weaponDetections">0</h3>
+                            <p>Weapon Spawn</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="data-card">
+                    <div class="data-card-header">
+                        <h2><i class="fas fa-exclamation-triangle"></i> Detection Log</h2>
+                    </div>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Player</th>
+                                <th>Detection Type</th>
+                                <th>Details</th>
+                                <th>Action Taken</th>
+                                <th>Date</th>
+                            </tr>
+                        </thead>
+                        <tbody id="detectionsTableBody">
+                            <!-- Detection rows will be inserted here -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Admins Section -->
+            <section id="admins" class="dashboard-section section-hidden">
+                <div class="dashboard-header">
+                    <h1>Admin Management</h1>
+                    <button class="btn btn-primary" onclick="openModal('addAdminModal')">
+                        <i class="fas fa-plus"></i> Add Admin
+                    </button>
+                </div>
+
+                <div class="data-card">
+                    <div class="data-card-header">
+                        <h2><i class="fas fa-user-shield"></i> Server Admins</h2>
+                    </div>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Identifier</th>
+                                <th>Role</th>
+                                <th>Added</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="adminsTableBody">
+                            <!-- Admin rows will be inserted here -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Whitelist Section -->
+            <section id="whitelist" class="dashboard-section section-hidden">
+                <div class="dashboard-header">
+                    <h1>Whitelist Management</h1>
+                    <button class="btn btn-primary" onclick="openModal('addWhitelistModal')">
+                        <i class="fas fa-plus"></i> Add to Whitelist
+                    </button>
+                </div>
+
+                <div class="data-card">
+                    <div class="data-card-header">
+                        <h2><i class="fas fa-check-circle"></i> Whitelisted Players</h2>
+                    </div>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Identifier</th>
+                                <th>Bypass Type</th>
+                                <th>Added By</th>
+                                <th>Date</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="whitelistTableBody">
+                            <!-- Whitelist rows will be inserted here -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Activity Log Section -->
+            <section id="logs" class="dashboard-section section-hidden">
+                <div class="dashboard-header">
+                    <h1>Activity Log</h1>
+                    <button class="btn btn-secondary" onclick="clearLogs()">
+                        <i class="fas fa-trash"></i> Clear Logs
+                    </button>
+                </div>
+
+                <div class="data-card">
+                    <div class="data-card-header">
+                        <h2><i class="fas fa-history"></i> All Activity</h2>
+                    </div>
+                    <ul class="activity-list" id="fullActivityLog">
+                        <!-- Activity items will be inserted here -->
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Settings Section -->
+            <section id="settings" class="dashboard-section section-hidden">
+                <div class="dashboard-header">
+                    <h1>Anticheat Settings</h1>
+                    <button class="btn btn-primary" onclick="saveSettings()">
+                        <i class="fas fa-save"></i> Save Settings
+                    </button>
+                </div>
+
+                <div class="data-card">
+                    <div class="settings-section">
+                        <h3><i class="fas fa-shield-alt"></i> Detection Modules</h3>
+                        
+                        <div class="toggle-switch">
+                            <div class="toggle-label">
+                                <h4>God Mode Detection</h4>
+                                <p>Detect and prevent invincibility exploits</p>
+                            </div>
+                            <label class="toggle-input">
+                                <input type="checkbox" id="settingGodmode" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+
+                        <div class="toggle-switch">
+                            <div class="toggle-label">
+                                <h4>Speed Hack Detection</h4>
+                                <p>Monitor player velocity for abnormal speeds</p>
+                            </div>
+                            <label class="toggle-input">
+                                <input type="checkbox" id="settingSpeedhack" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+
+                        <div class="toggle-switch">
+                            <div class="toggle-label">
+                                <h4>NoClip Detection</h4>
+                                <p>Detect players phasing through solid objects</p>
+                            </div>
+                            <label class="toggle-input">
+                                <input type="checkbox" id="settingNoclip" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+
+                        <div class="toggle-switch">
+                            <div class="toggle-label">
+                                <h4>Weapon Blacklist</h4>
+                                <p>Block unauthorized weapon spawning</p>
+                            </div>
+                            <label class="toggle-input">
+                                <input type="checkbox" id="settingWeapons" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+
+                        <div class="toggle-switch">
+                            <div class="toggle-label">
+                                <h4>Vehicle Blacklist</h4>
+                                <p>Prevent unauthorized vehicle spawning</p>
+                            </div>
+                            <label class="toggle-input">
+                                <input type="checkbox" id="settingVehicles" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+
+                        <div class="toggle-switch">
+                            <div class="toggle-label">
+                                <h4>Explosion Detection</h4>
+                                <p>Monitor and log explosion events</p>
+                            </div>
+                            <label class="toggle-input">
+                                <input type="checkbox" id="settingExplosions" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+
+                        <div class="toggle-switch">
+                            <div class="toggle-label">
+                                <h4>Resource Injection Detection</h4>
+                                <p>Detect injected scripts and executors</p>
+                            </div>
+                            <label class="toggle-input">
+                                <input type="checkbox" id="settingInjection" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+
+                        <div class="toggle-switch">
+                            <div class="toggle-label">
+                                <h4>Teleport Detection</h4>
+                                <p>Detect unauthorized teleportation</p>
+                            </div>
+                            <label class="toggle-input">
+                                <input type="checkbox" id="settingTeleport" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="settings-section">
+                        <h3><i class="fas fa-gavel"></i> Punishment Settings</h3>
+                        
+                        <div class="form-group">
+                            <label for="punishmentAction">Default Action on Detection</label>
+                            <select id="punishmentAction">
+                                <option value="kick">Kick Player</option>
+                                <option value="ban">Ban Player</option>
+                                <option value="warn">Warn Only (Log)</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="banDuration">Default Ban Duration</label>
+                            <select id="banDuration">
+                                <option value="1">1 Day</option>
+                                <option value="7">7 Days</option>
+                                <option value="30">30 Days</option>
+                                <option value="0">Permanent</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="settings-section">
+                        <h3><i class="fas fa-bell"></i> Notifications</h3>
+                        
+                        <div class="toggle-switch">
+                            <div class="toggle-label">
+                                <h4>Discord Webhook</h4>
+                                <p>Send detection alerts to Discord</p>
+                            </div>
+                            <label class="toggle-input">
+                                <input type="checkbox" id="settingDiscord">
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="discordWebhook">Discord Webhook URL</label>
+                            <input type="text" id="discordWebhook" placeholder="https://discord.com/api/webhooks/...">
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Config Section -->
+            <section id="config" class="dashboard-section section-hidden">
+                <div class="dashboard-header">
+                    <h1>Server Configuration</h1>
+                </div>
+
+                <div class="data-card">
+                    <div class="data-card-header">
+                        <h2><i class="fas fa-file-code"></i> config.lua</h2>
+                    </div>
+                    <p style="color: var(--text-secondary); margin-bottom: 1rem;">
+                        Copy this configuration to your TAC anticheat <code>config.lua</code> file. Your credentials are pre-filled.
+                    </p>
+                    <div class="config-display" id="configDisplay">
+                        -- Loading configuration...
+                    </div>
+                    <button class="btn btn-primary copy-btn" onclick="copyConfig()">
+                        <i class="fas fa-copy"></i> Copy Configuration
+                    </button>
+                </div>
+
+                <div class="data-card">
+                    <div class="data-card-header">
+                        <h2><i class="fas fa-download"></i> Download Anticheat</h2>
+                    </div>
+                    <p style="color: var(--text-secondary); margin-bottom: 1rem;">
+                        Download the TAC anticheat resource for your FiveM server.
+                    </p>
+                    <a href="https://github.com/yourusername/tac-anticheat" class="btn btn-primary" target="_blank">
+                        <i class="fab fa-github"></i> Download from GitHub
+                    </a>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Add Ban Modal -->
+    <div class="modal-overlay" id="addBanModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h2><i class="fas fa-ban"></i> Add Ban</h2>
+                <button class="modal-close" onclick="closeModal('addBanModal')">&times;</button>
+            </div>
+            <form id="addBanForm">
+                <div class="form-group">
+                    <label for="banPlayerName">Player Name</label>
+                    <input type="text" id="banPlayerName" placeholder="Player name" required>
+                </div>
+                <div class="form-group">
+                    <label for="banIdentifier">Identifier</label>
+                    <input type="text" id="banIdentifier" placeholder="license:xxx or steam:xxx" required>
+                </div>
+                <div class="form-group">
+                    <label for="banReason">Reason</label>
+                    <textarea id="banReason" rows="3" placeholder="Reason for ban" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="banExpiry">Expiry</label>
+                    <select id="banExpiry">
+                        <option value="1">1 Day</option>
+                        <option value="7">7 Days</option>
+                        <option value="30">30 Days</option>
+                        <option value="0">Permanent</option>
+                    </select>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('addBanModal')">Cancel</button>
+                    <button type="submit" class="btn btn-danger"><i class="fas fa-ban"></i> Add Ban</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Add Admin Modal -->
+    <div class="modal-overlay" id="addAdminModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h2><i class="fas fa-user-shield"></i> Add Admin</h2>
+                <button class="modal-close" onclick="closeModal('addAdminModal')">&times;</button>
+            </div>
+            <form id="addAdminForm">
+                <div class="form-group">
+                    <label for="adminName">Admin Name</label>
+                    <input type="text" id="adminName" placeholder="Admin name" required>
+                </div>
+                <div class="form-group">
+                    <label for="adminIdentifier">Identifier</label>
+                    <input type="text" id="adminIdentifier" placeholder="license:xxx or steam:xxx" required>
+                </div>
+                <div class="form-group">
+                    <label for="adminRole">Role</label>
+                    <select id="adminRole">
+                        <option value="moderator">Moderator</option>
+                        <option value="admin">Admin</option>
+                        <option value="superadmin">Super Admin</option>
+                    </select>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('addAdminModal')">Cancel</button>
+                    <button type="submit" class="btn btn-primary"><i class="fas fa-plus"></i> Add Admin</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Add Whitelist Modal -->
+    <div class="modal-overlay" id="addWhitelistModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h2><i class="fas fa-check-circle"></i> Add to Whitelist</h2>
+                <button class="modal-close" onclick="closeModal('addWhitelistModal')">&times;</button>
+            </div>
+            <form id="addWhitelistForm">
+                <div class="form-group">
+                    <label for="whitelistName">Player Name</label>
+                    <input type="text" id="whitelistName" placeholder="Player name" required>
+                </div>
+                <div class="form-group">
+                    <label for="whitelistIdentifier">Identifier</label>
+                    <input type="text" id="whitelistIdentifier" placeholder="license:xxx or steam:xxx" required>
+                </div>
+                <div class="form-group">
+                    <label for="whitelistBypass">Bypass Type</label>
+                    <select id="whitelistBypass">
+                        <option value="all">All Detections</option>
+                        <option value="godmode">God Mode Only</option>
+                        <option value="speed">Speed Hack Only</option>
+                        <option value="noclip">NoClip Only</option>
+                        <option value="weapons">Weapons Only</option>
+                    </select>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('addWhitelistModal')">Cancel</button>
+                    <button type="submit" class="btn btn-success"><i class="fas fa-check"></i> Add to Whitelist</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="js/dashboard.js"></script>
+</body>
+</html>
